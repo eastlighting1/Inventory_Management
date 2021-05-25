@@ -1,0 +1,343 @@
+// 코드를 다 짠 후 분리 예정
+/* 짜다보니 warehousehistory와 stock를 
+  create (런타임에서 객체 생성), 
+  delete, 
+  search 하는 과정에서
+ 자료구조가 필요할 것 같아 여러가지 도입해보면서 찾는 중입니다
+*/
+
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.time.*;
+	
+
+
+// 객체 관리용 AVL 트리 가져옴
+
+public class Node<T> {
+
+    private T data;                 // 데이터
+    private Node<T> leftNode;       // 왼쪽 하위노드
+    private Node<T> rightNode;      // 오른쪽 하위노드
+    private int height;             // 높이
+
+    public Node(T data) {
+        this.data = data;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public Node<T> getLeftNode() {
+        return leftNode;
+    }
+
+    public void setLeftNode(Node<T> leftNode) {
+        this.leftNode = leftNode;
+    }
+
+    public Node<T> getRightNode() {
+        return rightNode;
+    }
+
+    public void setRightNode(Node<T> rightNode) {
+        this.rightNode = rightNode;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    @Override
+    public String toString() {
+        return this.data.toString();
+    }
+
+}
+
+public interface Tree<T> {
+
+    public void insert(T data); // 삽입
+    public void traverse();     // 순회
+    public void delete(T data); // 삭제
+
+}
+
+public class AVLTree2<T extends Comparable<T>> implements Tree<T> {
+    
+    private Node<T> root; // 루트 노드
+    
+    // 삽입
+    @Override
+    public void insert(T data) {
+        
+    }
+    
+    // 순회
+    @Override
+    public void traverse() {
+
+    }
+    
+    // 삭제
+    @Override
+    public void delete(T data) {
+
+    }
+}
+
+private int height(Node<T> node) {
+    if (node == null) {
+        return -1;
+    }
+    return node.getHeight();
+}
+
+private Node<T> rightRotation(Node<T> parentNode) {
+    System.out.println("Rotating to the right on node : " + parentNode);
+
+    Node<T> newParentNode = parentNode.getLeftNode();   // 왼쪽 자식노드가 새로운 부모노드가 됨
+    Node<T> nullNode = newParentNode.getRightNode();    // 왼쪽 자식노드의 오른쪽 자식노드(null 노드)
+
+    newParentNode.setRightNode(parentNode);             // 새로운 부모노드의 오른쪽 자식노드에 기존의 부모노드를 세팅
+    parentNode.setLeftNode(nullNode);                   // 기존의 부모노드의 왼쪽 자식노드를 null 노드로 세팅
+
+    // 회전한 노드들의 높이 갱신
+    parentNode.setHeight(Math.max(height(parentNode.getLeftNode()), height(parentNode.getRightNode())) + 1);
+    newParentNode.setHeight(Math.max(height(newParentNode.getLeftNode()), height(newParentNode.getRightNode())) + 1);
+
+    // 새로운 부모노드 반환
+    return newParentNode;
+}
+
+private Node<T> leftRotation(Node<T> parentNode) {
+
+    System.out.println("Rotating to the left on node : " + parentNode);
+
+    Node<T> newParentNode = parentNode.getRightNode();  // 오른쪽 자식노드가 새로운 부모노드가 됨
+    Node<T> nullNode = newParentNode.getLeftNode();     // 오른쪽 자식노드의 왼쪽 자식노드(null 노드)
+
+    newParentNode.setLeftNode(parentNode);              // 새로운 부모노드의 왼쪽 자식노드에 기존의 부모노드를 세팅
+    parentNode.setRightNode(nullNode);                  // 기존의 부모노드의 오른쪽 자식노드를 null 노드로 세팅
+
+    // 회전한 노드들의 높이 갱신
+    parentNode.setHeight(Math.max(height(parentNode.getLeftNode()), height(parentNode.getRightNode())) + 1);
+    newParentNode.setHeight(Math.max(height(newParentNode.getLeftNode()), height(newParentNode.getRightNode())) + 1);
+
+    // 새로운 부모노드 반환
+    return newParentNode;
+}
+
+@Override
+public void insert(T data) {
+    root = insert(root, data);
+}
+
+
+/* 끝 */
+
+	class Warehouse {
+	
+	private String warehouseName;
+	private String Location;
+	private int warehouseCode;
+	private String warehouseHistory;
+
+	public Warehouse(String name, String where, int code, String history) {
+		this.warehouseName = name;
+		this.Location = where;
+		this.warehouseCode = code;
+		this.warehouseHistory = history;
+	}
+}
+
+class WarehouseHistory extends Warehouse {
+	
+	Scanner scan = new Scanner(System.in);
+	
+	public WarehouseHistory(String name, String where, int code, String history) {
+		super(name, where, code, history);
+	}
+
+	private LocalDate Date;
+	private String productIO;
+	private String productList;
+	private int amount;
+	
+	
+	public void SearchHistory() {
+		
+	}
+	
+	public void DisplayHistory() {
+		
+	}
+	
+	public void AddHistory(int select) {
+		
+		int year = 0;
+		int month = 0;
+		int day = 0;
+		int cnt_num = 0;
+		String product;
+		
+		final int SHIP = 0;
+		final int RECEIVE = 1;
+		
+		if(select == SHIP) {
+			
+			this.productIO = "Stocked";
+			System.out.println("When was it stocked? \n ex) 2021.05.23 => 2021 05 23   : ");
+			year = scan.nextInt();
+			month = scan.nextInt();
+			day = scan.nextInt();
+		
+		}
+		
+		else if(select == RECEIVE) {
+			this.productIO = "Released";
+			System.out.println("When was it released? \n ex) 2021.05.23 => 2021 05 23   : ");
+			year = scan.nextInt();
+			month = scan.nextInt();
+			day = scan.nextInt();
+		}
+		
+		LocalDate theDate = LocalDate.of(year, month, day);
+		this.Date = theDate;
+		
+		System.out.println(" What product it is? : ");
+		product = scan.nextLine();
+		this.productList = product; 
+		
+		System.out.println(" How many product do we have? : ");
+		cnt_num = scan.nextInt();
+		this.amount = cnt_num;
+		
+		scan.close();
+	}
+	
+	public void ModifyHistory(int select) {
+		
+		final int DATE = 0;
+		final int IO = 1;
+		final int NAME = 2;
+		final int AMOUNT = 3;
+		
+		int year = 0;
+		int month = 0;
+		int day = 0;
+		int cnt_num = 0;
+		String product;
+		
+		if(select == DATE) {
+			System.out.println(" Change To : ex) 2021.05.23 => 2021 05 23 ");
+			year = scan.nextInt();
+			month = scan.nextInt();
+			day = scan.nextInt();
+			
+			LocalDate theDate = LocalDate.of(year, month, day);
+			this.Date = theDate;
+			
+		} else if(select == IO) {
+			
+			if(this.productIO == "Released") {
+				this.productIO = "Stocked";
+			} else if(this.productIO == "Stocked") {
+				this.productIO = "Released";
+			}
+			
+		} else if(select == NAME) {
+			
+			System.out.println("Change To : ");
+
+			product = scan.nextLine();
+			this.productList = product;
+			
+		} else if(select == AMOUNT) {
+			
+			System.out.println("Change To : ");
+
+			cnt_num = scan.nextInt();
+			this.amount = cnt_num;
+
+		}
+	}
+	
+	public void DeleteHistory() {
+		
+	}
+
+	
+}
+	
+	class Stock {
+		private int ProductCode;
+		private int amount;
+		private String notes;
+		
+		Scanner scan = new Scanner(System.in);
+		
+		public void addStock() {
+			int code;
+			int cnt_num;
+			String memo;
+			
+			System.out.println("What Product? : ");
+			code = scan.nextInt();
+			this.ProductCode = code;
+			
+			System.out.println("How Many? : ");
+			cnt_num = scan.nextInt();
+			this.amount = cnt_num;
+			
+			System.out.println("Anything to know more? : ");
+			memo = scan.nextLine();
+			this.notes = memo;
+			
+		}
+		
+		
+		public void modifyStock(int select) {
+			
+			final int NUM = 0;
+			final int AMN = 1;
+			final int STR = 2;
+			
+			int code;
+			int cnt_num;
+			String memo;
+			
+			if(select == NUM) {
+				
+				System.out.println("Change To : ");
+
+				code = scan.nextInt();
+				this.ProductCode = code;
+				
+			} else if (select == AMN) {
+				
+				System.out.println("Change To : ");
+
+				cnt_num = scan.nextInt();
+				this.amount = cnt_num;
+				
+			} else if (select == STR) {
+				
+				System.out.println("Change To : ");
+
+				memo = scan.nextLine();
+				this.notes = memo;
+				
+			}
+		}
+		
+	}
